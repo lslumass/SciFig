@@ -20,8 +20,8 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/lslumass/SciFig",
-    packages=find_packages(where="scifig"),
-    package_dir={"": "scifig"},
+    packages=["SciFig"],
+    package_dir={"SciFig": "scifig"},
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
