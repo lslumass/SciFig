@@ -19,3 +19,4 @@ def general_temp(num_row, num_col, size_x, size_y):
         axs.tick_params(axis="both", direction='in', width=2, length=8.0, pad=6)
         plt.setp(axs.spines.values(), linewidth=2)
     plt.rcParams['font.size'] = 18    
+    return fig, axs
