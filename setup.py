@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 with open("README.md", "r") as f:
@@ -20,14 +20,9 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/lslumass/SciFig",
-    download_url="https://github.com/lslumass/SciFig/releases",
-    platforms="Tested on Ubuntu 22.04",
-    packages=["SciFig"],
-    package_dir={'SciFig':'scifig'},
-    install_requires=['numpy', 'matplotlib'],
+    packages=find_packages(where="scifig"),
+    package_dir={"": "scifig"},
     classifiers=[
-        # Trove classifiers
-        # (https://pypi.python.org/pypi?%3Aaction=list_classifiers)
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
@@ -35,5 +30,10 @@ setup(
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         "Topic :: Scientific/Engineering :: Chemistry",
         "Intended Audience :: Science/Research",
+    ],
+    python_requires='>=3.6',
+    install_requires=[
+        "matplotlib>=3.1.0",
+        "numpy>=1.17.0",
     ],
 )
