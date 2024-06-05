@@ -14,3 +14,4 @@ def scatters2dist(point_list, num_bin):
     x_grid = np.linspace(np.min(point_list)-1, np.max(point_list)+1, num_bin)
     kde_values = kde(x_grid)
     return x_grid, kde_values
+
