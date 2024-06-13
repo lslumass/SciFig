@@ -24,3 +24,10 @@ def general_temp(num_row, num_col, size_x, size_y):
     mpl.rcParams['mathtext.default'] = 'regular'
 
     return fig, axs
+
+def set_grid(ax):
+    ax.grid(which='major', ls='--', dashes=(5,5), lw=1)
+
+def set_legend(ax):
+    ax.legend(facecolor='white', framealpha=0.7, edgecolor='white')
+    
