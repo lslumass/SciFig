@@ -25,10 +25,9 @@ def general_temp(num_row, num_col, size_x, size_y):
 
     return fig, axs
 
-def set_grid(ax, **kwargs):
-    new_kwargs = {**kwargs, "extra": "value"}
-    ax.grid(which='major', ls='--', dashes=(5,5), lw=1, alpha=0.5, **new_kwargs)
+def set_grid(ax, **args, **kwargs):
+    ax.grid(which='major', ls='--', dashes=(5,5), lw=1, alpha=0.5, **args, **kwargs)
 
-def set_legend(ax, **kwargs):
-    new_kwargs = {**kwargs, "extra": "value"}
-    ax.legend(facecolor='white', framealpha=0.7, edgecolor='white', **new_kwargs)
+def set_legend(ax, **args, **kwargs):
+    ax.legend(facecolor='white', framealpha=0.7, edgecolor='white', **args, **kwargs)
+
