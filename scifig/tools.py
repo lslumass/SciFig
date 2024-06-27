@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.interpolate import make_interp_spline
 
 
 def scatter2hist(point_list, num_bin, styles):
@@ -12,28 +13,44 @@ def scatter2hist(point_list, num_bin, styles):
         s_pmf: smoothed line of pmf
     '''
     counts, bins = np.histogram(point_list, num_bin)
-    probs = counts/counts.sum()
-    pdf = probs/np.diff(bins)
+    pmf = counts/counts.sum()
+    pdf = pmf/np.diff(bins)
 
     if styles == 'pdf':
-        return bins[:-1]+0.5*np.diff(bins), pdf
+        bins = bins[:-1]+0.5*np.diff(bins)
+        return bins, pdf
     elif styles == 'pmf':
-        return bins[:-1]+0.5*np.diff(bins), probs
+        bins = bins[:-1]+0.5*np.diff(bins)
+        return bins, pmf
     elif styles == 'l_pdf':
-        return bins[:-1]+0.5*np.diff(bins), pdf
+        bins = np.insert(bins, 0, 2*bins[0]-bins[1])
+        bins = bins+0.5*np.diff(bins)[0]
+        pdf = np.insert(pdf, 0, 0)
+        pdf = np.append(pdf, 0)
+        return bins, pdf
     elif styles == 'l_pmf':
-        return bins[:-1]+0.5*np.diff(bins), probs
+        bins = np.insert(bins, 0, 2*bins[0]-bins[1])
+        bins = bins+0.5*np.diff(bins)[0]
+        pmf = np.insert(pmf, 0, 0)
+        pmf = np.append(pmf, 0)
+        return bins, pmf
     elif styles == 's_pdf':
-        window_size = 5
-        cumsum_vec = np.cumsum(np.insert(pdf, 0, 0))
-        pdf_smooth = (cumsum_vec[window_size:] - cumsum_vec[:-window_size])/window_size
-        bins_smooth = bins[window_size - 1:]
+        bins = np.insert(bins, 0, 2*bins[0]-bins[1])
+        bins = bins+0.5*np.diff(bins)[0]
+        pdf = np.insert(pdf, 0, 0)
+        pdf = np.append(pdf, 0)
+        bins_smooth = np.linspace(bins.min(), bins.max(), num_bin*10)
+        spline = make_interp_spline(bins, pdf, k=3)
+        pdf_smooth = spline(bins_smooth)
         return bins_smooth, pdf_smooth
     elif styles == 's_pmf':
-        window_size = 5
-        cumsum_vec = np.cumsum(np.insert(probs, 0, 0))
-        probs_smooth = (cumsum_vec[window_size:] - cumsum_vec[:-window_size])/window_size
-        bins_smooth = bins[window_size - 1:]
-        return bins_smooth, probs_smooth
+        bins = np.insert(bins, 0, 2*bins[0]-bins[1])
+        bins = bins+0.5*np.diff(bins)[0]
+        pmf = np.insert(pmf, 0, 0)
+        pmf = np.append(pmf, 0)
+        bins_smooth = np.linspace(bins.min(), bins.max(), num_bin*10)
+        spline = make_interp_spline(bins, pmf, k=2)
+        pmf_smooth = spline(bins_smooth)
+        return bins_smooth, pmf_smooth
     else:
         print('styles error')
