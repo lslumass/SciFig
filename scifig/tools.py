@@ -16,9 +16,9 @@ def scatter2hist(point_list, num_bin, styles):
     pdf = probs/np.diff(bins)
 
     if styles == 'pdf':
-        return bins[:-1], pdf
+        return bins[:-1]+0.5*np.diff(bins), pdf
     elif styles == 'pmf':
-        return bins[:-1], probs
+        return bins[:-1]+0.5*np.diff(bins), probs
     elif styles == 'l_pdf':
         return bins[:-1]+0.5*np.diff(bins), pdf
     elif styles == 'l_pmf':
