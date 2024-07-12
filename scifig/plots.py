@@ -31,3 +31,5 @@ def set_grid(ax, *args, **kwargs):
 def set_legend(ax, *args, **kwargs):
     ax.legend(facecolor='white', framealpha=0.7, edgecolor='white', *args, **kwargs)
 
+def set_label(ax, label, **kwargs):
+    ax.text(-0.2, 1.05, label, transform=ax.transAxes, size=19, weight='bold', **kwargs)
