@@ -31,13 +31,28 @@ def set_grid(ax, *args, **kwargs):
 def set_legend(ax, *args, **kwargs):
     ax.legend(facecolor='white', framealpha=0.7, edgecolor='white', *args, **kwargs)
 
-def number2letter(number):
-    if 1<= number <= 26:
-        return chr(number + 64)
+def number2letter(number, style=1):
+    if style ==1 :
+        if 1<= number <= 26:
+            return chr(number + 64)
+        else:
+            raise ValueError("Number out of range. Please enter a number between 1 and 26.")
+    elif style == 2:
+        if 1<= number <= 26:
+            return chr(number + 96)
+        else:
+            raise ValueError("Number out of range. Please enter a number between 1 and 26.")
     else:
-        raise ValueError("Number out of range. Please enter a number between 1 and 26.")
+        raise ValueError("Style out of range. Please enter a style of 1 or 2.")
 
-def set_label(axs, label, **kwargs):
-    for i, ax in enumerate(axs):
-        label = number2letter(i+1)
-        ax.text(-0.2, 1.05, label, transform=ax.transAxes, size=19, weight='bold', **kwargs)
+def set_label(axs, style=1, **kwargs):
+    if style == 1:
+        for i, ax in enumerate(axs):
+            label = number2letter(i+1, style=1)
+            ax.text(-0.2, 1.05, label, transform=ax.transAxes, size=19, weight='bold', **kwargs)
+    elif style == 2:
+        for i, ax in enumerate(axs):
+            label = '('+number2letter(i+1, style=2)+')'
+            ax.text(-0.2, 1.05, label, transform=ax.transAxes, size=19, weight='bold', **kwargs)
+    else:
+        raise ValueError("Style out of range. Please enter a style of 1 or 2.")
