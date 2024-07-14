@@ -45,14 +45,14 @@ def number2letter(number, style=1):
     else:
         raise ValueError("Style out of range. Please enter a style of 1 or 2.")
 
-def set_label(axs, style=1, **kwargs):
+def set_label(axs, style=1, x=-0.2, y=1.05, **kwargs):
     if style == 1:
         for i, ax in enumerate(axs):
             label = number2letter(i+1, style=1)
-            ax.text(-0.2, 1.05, label, transform=ax.transAxes, size=19, weight='bold', **kwargs)
+            ax.text(x, y, label, transform=ax.transAxes, size=19, weight='bold', **kwargs)
     elif style == 2:
         for i, ax in enumerate(axs):
             label = '('+number2letter(i+1, style=2)+')'
-            ax.text(-0.2, 1.05, label, transform=ax.transAxes, size=19, weight='bold', **kwargs)
+            ax.text(x, y, label, transform=ax.transAxes, size=19, weight='bold', **kwargs)
     else:
         raise ValueError("Style out of range. Please enter a style of 1 or 2.")
