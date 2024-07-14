@@ -46,3 +46,19 @@ def scatter2hist(point_list, num_bin, styles):
         return bins_smooth, pmf_smooth
     else:
         print('styles error')
+
+
+def block_mean(data, division):
+    '''
+    data: a list of the scatter points along simulation time
+    division: how many parts should the data divided, and the first part will be ignored for analysis
+                the rest part will be divided into two blocks, and then the standard deviation and average
+    '''
+    l = len(data)
+    start_frame = int(l/division)
+    half = int((l-start_frame)/2)
+    part1 = np.mean(data[start_frame:half])
+    part2 = np.mean(data[half:])
+    average = np.mean([part1, part2])
+    error = np.std([part1, part2])
+    return average, error
