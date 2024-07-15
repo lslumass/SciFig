@@ -56,7 +56,7 @@ def block_mean(data, division):
     '''
     l = len(data)
     start_frame = int(l/division)
-    half = int((l-start_frame)/2)
+    half = start_frame + int((l-start_frame)/2)
     part1 = np.mean(data[start_frame:half])
     part2 = np.mean(data[half:])
     average = np.mean([part1, part2])
