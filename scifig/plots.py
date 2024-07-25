@@ -57,16 +57,17 @@ def set_label(axs, style=1, x=-0.2, y=1.05, **kwargs):
     else:
         raise ValueError("Style out of range. Please enter a style of 1 or 2.")
     
-def color_cycle(color):
+def color_cycle(id):
     colors = {
-        'blue' : '#1f77b4',
-        'orange' : '#ff7f0e',
-        'green' : '#2ca02c',
-        'red' : '#d62728',
-        'purple' : '#9467bd',
-        'brown' : '#8c564b',
-        'pink' : '#e377c2',
-        'grey' : '#7f7f7f',
-        'oliver' : '#bcbd22',
-        'skyblue' : '#17becf',
+        1 : '#1f77b4',
+        2 : '#ff7f0e',
+        3 : '#2ca02c',
+        4 : '#d62728',
+        5 : '#9467bd',
+        6 : '#8c564b',
+        7 : '#e377c2',
+        8 : '#7f7f7f',
+        9 : '#bcbd22',
+        10: '#17becf',
     }
+    return colors.get(id, '#000000')
