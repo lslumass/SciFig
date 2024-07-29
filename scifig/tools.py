@@ -4,6 +4,7 @@ from scipy.interpolate import make_interp_spline
 
 def scatter2hist(point_list, num_bin, styles):
     '''
+    convert scatters to hist or distribution
     styles:
         pdf: histogram of probability density function
         pmf: histogram of probability mass function
@@ -50,6 +51,7 @@ def scatter2hist(point_list, num_bin, styles):
 
 def block_mean(data, division):
     '''
+    calculate the block mean and std of a list of number 
     data: a list of the scatter points along simulation time
     division: how many parts should the data divided, and the first part will be ignored for analysis
                 the rest part will be divided into two blocks, and then the standard deviation and average
@@ -62,3 +64,22 @@ def block_mean(data, division):
     average = np.mean([part1, part2])
     error = np.std([part1, part2])
     return average, error
+
+
+def remove_zero(xs, ys):
+    '''
+    remove the zero section at the beginning and ending of one distribution
+    xs: data for x-axis
+    ys: data for y-axis
+    '''
+    for idx in range(len(xs)):
+        # find the first non-zero point from begging
+        if ys[idx] != 0:
+            start = idx-5
+            break
+    for idx in reversed(range(len(xs))):
+        # find the last non-zero point at the end
+        if ys[idx] != 0:
+            end = idx+5
+            break
+    return(xs[start], xs[end])
