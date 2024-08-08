@@ -71,3 +71,6 @@ def color_cycle(id):
         10: '#17becf',
     }
     return colors.get(id, '#000000')
+
+def savefig(fig, filename):
+    fig.savefig(filename, dpi=600, bbox_inches='tight')
