@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.interpolate import make_interp_spline
+from scipy.stats import gaussian_kde
 
 
 def scatter2hist(point_list, num_bin, styles):
@@ -47,6 +48,33 @@ def scatter2hist(point_list, num_bin, styles):
         return bins_smooth, pmf_smooth
     else:
         print('styles error')
+
+
+def pca2fe(pc1, pc2, num_bin):
+    '''
+    convert pca results to 2d free energy landscape
+    free energy was returned as the z value of 2d contour map
+    '''
+    # Constants
+    kB = 1.380649e-23  # Boltzmann constant in J/K
+    T = 300  # Temperature in Kelvin
+    beta = 1 / (kB * T)
+
+    # create 2d density and then probability and then pmf
+    xy = np.vstack([pc1, pc2])
+    density = gaussian_kde(xy)(xy)
+    prob = density / np.sum(density)
+    H, xedges, yedges = np.histogram2d(pc1, pc2, bins=num_bin, weights=prob, density=False)
+    pmf = H / np.sum(H)
+    
+    # avoid log(0) by setting a small minimum pmf value
+    min_pmf = 1e-12
+    pmf = np.maximum(pmf, min_pmf)
+
+    # convert pmf to free energy
+    fe = -np.log(pmf) / beta
+
+    return fe
 
 
 def block_mean(data, division):
