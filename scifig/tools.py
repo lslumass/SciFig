@@ -53,6 +53,7 @@ def scatter2hist(point_list, num_bin, styles):
 def pca2fe(pc1, pc2, num_bin):
     '''
     convert pca results to 2d free energy landscape
+    return: X, Y , free_energy
     free energy was returned as the z value of 2d contour map
     '''
     # Constants
@@ -73,8 +74,10 @@ def pca2fe(pc1, pc2, num_bin):
 
     # convert pmf to free energy
     fe = -np.log(pmf) / beta
+    
+    X, Y = np.meshgrid(xedges[:-1], yedges[:-1])
 
-    return fe
+    return X,Y, fe
 
 
 def block_mean(data, division):
