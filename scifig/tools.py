@@ -52,17 +52,10 @@ def scatter2hist(point_list, num_bin, styles):
         print('styles error')
 
 
-def mda_pca(psf, dcd, sel, align=False):
+def pca2d(axs, psf, dcd, sel, num_bin=100, align=False, cmap='GnBu'): 
     u = mda.Universe(psf, dcd)
     atomgroup = u.select_atoms(sel)
-    pc = pca.PCA(u, select=sel, align=align).run()
-    pc1, pc2 = pc.transform(sel)[:,0], pc.transform(sel)[:,1]
-    return pc
-
-def pca2d(axs, pc, sel, num_bin, cmap):
-    '''
-    convert pca results to 2d free energy landscape in the unit of kBT
-    '''
+    pc = pca.PCA(u, select=atomgroup, align=align).run()
     pc1, pc2 = pc.transform(sel)[:,0], pc.transform(sel)[:,1]
     var1, var2 = pc.cumulated_variance[1], pc.cumulated_variance[1]
     H, xedges, yedges = np.histogram2d(pc1, pc2, bins=num_bin)
