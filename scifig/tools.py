@@ -58,14 +58,11 @@ def pca2fe(pc1, pc2, num_bin):
     '''
     # Constants
     kB = 1.380649e-23  # Boltzmann constant in J/K
-    T = 300  # Temperature in Kelvin
-    beta = 1 / (kB * T)
+    T = 303  # Temperature in Kelvin
+    beta = 1 / (kB * T) / 2.39006e-4
 
     # create 2d density and then probability and then pmf
-    xy = np.vstack([pc1, pc2])
-    density = gaussian_kde(xy)(xy)
-    prob = density / np.sum(density)
-    H, xedges, yedges = np.histogram2d(pc1, pc2, bins=num_bin, weights=prob, density=False)
+    H, xedges, yedges = np.histogram2d(pc1, pc2, bins=num_bin)
     pmf = H / np.sum(H)
     
     # avoid log(0) by setting a small minimum pmf value
@@ -73,11 +70,10 @@ def pca2fe(pc1, pc2, num_bin):
     pmf = np.maximum(pmf, min_pmf)
 
     # convert pmf to free energy
-    fe = -np.log(pmf) / beta
-    
-    X, Y = np.meshgrid(xedges[:-1], yedges[:-1])
+    fe = -np.log(pmf) * kB * T * 2.39006e-4
+    fe[np.isinf(fe)] = np.nan
 
-    return X,Y, fe
+    return fe
 
 
 def block_mean(data, division):
