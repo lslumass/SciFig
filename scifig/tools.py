@@ -52,7 +52,14 @@ def scatter2hist(point_list, num_bin, styles):
         print('styles error')
 
 
-def pca2d(axs, psf, dcd, sel, num_bin=100, align=False, cmap='GnBu'): 
+def mda_pca(psf, dcd, sel, align=True):
+    u = mda.Universe(psf, dcd)
+    atomgroup = u.select_atoms(sel)
+    pc = pca.PCA(u, select=sel, align=align).run()
+    return pc
+
+
+def pca2d(axs, psf, dcd, sel, num_bin=100, align=True, cmap='viridis'): 
     u = mda.Universe(psf, dcd)
     atomgroup = u.select_atoms(sel)
     pc = pca.PCA(u, select=sel, align=align).run()
