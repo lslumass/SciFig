@@ -56,7 +56,7 @@ def pca2d(axs, psf, dcd, sel, num_bin=100, align=False, cmap='GnBu'):
     u = mda.Universe(psf, dcd)
     atomgroup = u.select_atoms(sel)
     pc = pca.PCA(u, select=sel, align=align).run()
-    pc1, pc2 = pc.transform(sel)[:,0], pc.transform(sel)[:,1]
+    pc1, pc2 = pc.transform(atomgroup)[:,0], pc.transform(atomgroup)[:,1]
     var1, var2 = pc.cumulated_variance[1], pc.cumulated_variance[1]
     H, xedges, yedges = np.histogram2d(pc1, pc2, bins=num_bin)
     pmf = H / np.sum(H)
