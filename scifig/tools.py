@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.interpolate import make_interp_spline
 from scipy.stats import gaussian_kde
+from MDAnalysis.analysis import pca
+import MDAnalysis as mda
 
 
 def scatter2hist(point_list, num_bin, styles):
@@ -50,22 +52,31 @@ def scatter2hist(point_list, num_bin, styles):
         print('styles error')
 
 
-def pca2fe(pc1, pc2, num_bin):
+def mda_pca(psf, dcd, sel, align=False):
+    u = mda.Universe(psf, dcd)
+    atomgroup = u.select_atoms(sel)
+    pc = pca.PCA(u, select=sel, align=align).run()
+    pc1, pc2 = pc.transform(sel)[:,0], pc.transform(sel)[:,1]
+    return pc
+
+def pca2d(axs, pc, sel, num_bin, cmap):
     '''
-    convert pca results to 2d free energy landscape
-    return: X, Y , free_energy
-    free energy was returned as the z value of 2d contour map
+    convert pca results to 2d free energy landscape in the unit of kBT
     '''
-    
+    pc1, pc2 = pc.transform(sel)[:,0], pc.transform(sel)[:,1]
+    var1, var2 = pc.cumulated_variance[1], pc.cumulated_variance[1]
     H, xedges, yedges = np.histogram2d(pc1, pc2, bins=num_bin)
     pmf = H / np.sum(H)
 
     # convert pmf to free energy
     fe = -np.log(pmf)
-    fe_min = min(fe)[np.isfinite(fe)]
+    fe_min = np.min(fe[np.isfinite(fe)])
     fe -= fe_min
 
-    return fe
+    im = axs.imshow(fe.T, origin='lower', cmap=cmap)
+    axs.figure.colorbar(im, ax = axs, label='Free energy (k$_B$T)', fraction=0.046)
+    axs.set(xlabel=f'PC1 ({var1*100:.2f}%)', xticks=[], ylabel=f'PC2 ({var2*100:.2f}%)', yticks=[])
+    
 
 
 def block_mean(data, division):
