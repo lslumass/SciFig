@@ -56,22 +56,14 @@ def pca2fe(pc1, pc2, num_bin):
     return: X, Y , free_energy
     free energy was returned as the z value of 2d contour map
     '''
-    # Constants
-    kB = 1.380649e-23  # Boltzmann constant in J/K
-    T = 303  # Temperature in Kelvin
-    beta = 1 / (kB * T) / 2.39006e-4
-
-    # create 2d density and then probability and then pmf
+    
     H, xedges, yedges = np.histogram2d(pc1, pc2, bins=num_bin)
     pmf = H / np.sum(H)
-    
-    # avoid log(0) by setting a small minimum pmf value
-    min_pmf = 1e-12
-    pmf = np.maximum(pmf, min_pmf)
 
     # convert pmf to free energy
-    fe = -np.log(pmf) * kB * T * 2.39006e-4
-    fe[np.isinf(fe)] = np.nan
+    fe = -np.log(pmf)
+    fe_min = min(fe)[np.isfinite(fe)]
+    fe -= fe_min
 
     return fe
 
