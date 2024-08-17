@@ -53,6 +53,9 @@ def scatter2hist(point_list, num_bin, styles):
 
 
 def mda_pca(psf, dcd, sel, align=True):
+    '''
+    calculate the pc1, pc2 from the pca analysis of psf and dcd file
+    '''
     u = mda.Universe(psf, dcd)
     atomgroup = u.select_atoms(sel)
     pc = pca.PCA(u, select=sel, align=align).run()
@@ -62,6 +65,9 @@ def mda_pca(psf, dcd, sel, align=True):
 
 
 def pca2d(pc1, pc2, num_bin=100):
+    '''
+    convert pc1, pc2 to free energy distribution in the unit of kBT
+    '''
     H, xedges, yedges = np.histogram2d(pc1, pc2, bins=num_bin)
     pmf = H / np.sum(H)
 
