@@ -78,7 +78,7 @@ def pca2fe(pc1, pc2, num_bin=100):
     return fe
 
 
-def plt_pca(axs, fe, var1, var2, cmap='viridis'):
+def plt_pca(axs, fe, var1=None, var2=None, cmap='viridis'):
     im = axs.imshow(fe.T, origin='lower', cmap=cmap)
     axs.figure.colorbar(im, ax = axs, label='Free energy (k$_B$T)', fraction=0.046)
     if var1 == None:
