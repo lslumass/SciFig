@@ -64,7 +64,7 @@ def mda_pca(psf, dcd, sel, align=True):
     return pc1, pc2, var1, var2
 
 
-def pca2d(pc1, pc2, num_bin=100):
+def pca2fe(pc1, pc2, num_bin=100):
     '''
     convert pc1, pc2 to free energy distribution in the unit of kBT
     '''
