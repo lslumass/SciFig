@@ -79,7 +79,7 @@ def pca2fe(pc1, pc2, num_bin=100):
     # find the local minimum
     local_minimum = np.unravel_index(np.argmax(H), H.shape)
     localx, localy = xedges[local_minimum[0]], yedges[local_minimum[1]]
-    return fe, localx, localy
+    return fe
 
 
 def plt_pca(axs, fe, var1=None, var2=None, cmap='viridis', contour=False, levels=5):
