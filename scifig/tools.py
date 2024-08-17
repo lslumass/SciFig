@@ -61,6 +61,25 @@ def mda_pca(psf, dcd, sel, align=True):
     return pc1, pc2, var1, var2
 
 
+def pca2d(pc1, pc2, num_bin=100):
+    H, xedges, yedges = np.histogram2d(pc1, pc2, bins=num_bin)
+    pmf = H / np.sum(H)
+
+    # convert pmf to free energy
+    fe = -np.log(pmf)
+    fe_min = np.min(fe[np.isfinite(fe)])
+    fe -= fe_min
+    return fe
+
+
+def plt_pca(axs, fe, var1, var2, cmap='viridis'):
+    im = axs.imshow(fe.T, origin='lower', cmap=cmap)
+    axs.figure.colorbar(im, ax = axs, label='Free energy (k$_B$T)', fraction=0.046)
+    if var1 == None:
+        axs.set(xlabel='PC1', xticks=[], ylabel='PC2', yticks=[])
+    else:
+        axs.set(xlabel=f'PC1 ({var1*100:.2f}%)', xticks=[], ylabel=f'PC2 ({var2*100:.2f}%)', yticks=[])
+
 def pca2d(axs, psf, dcd, sel, num_bin=100, align=True, cmap='viridis'): 
     u = mda.Universe(psf, dcd)
     atomgroup = u.select_atoms(sel)
