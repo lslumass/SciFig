@@ -78,13 +78,16 @@ def pca2fe(pc1, pc2, num_bin=100):
     return fe
 
 
-def plt_pca(axs, fe, var1=None, var2=None, cmap='viridis'):
+def plt_pca(axs, fe, var1=None, var2=None, cmap='viridis', contour=False, levels=5):
     im = axs.imshow(fe.T, origin='lower', cmap=cmap)
     axs.figure.colorbar(im, ax = axs, label='Free energy (k$_B$T)', fraction=0.046)
     if var1 == None:
         axs.set(xlabel='PC1', xticks=[], ylabel='PC2', yticks=[])
     else:
         axs.set(xlabel=f'PC1 ({var1*100:.2f}%)', xticks=[], ylabel=f'PC2 ({var2*100:.2f}%)', yticks=[])
+    
+    if contour:
+        axs.contour(fe.T, levels=levels, colors='k')
 
 def pca2d(axs, psf, dcd, sel, num_bin=100, align=True, cmap='viridis'): 
     u = mda.Universe(psf, dcd)
