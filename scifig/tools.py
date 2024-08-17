@@ -56,7 +56,9 @@ def mda_pca(psf, dcd, sel, align=True):
     u = mda.Universe(psf, dcd)
     atomgroup = u.select_atoms(sel)
     pc = pca.PCA(u, select=sel, align=align).run()
-    return pc
+    pc1, pc2 = pc.transform(atomgroup)[:,0], pc.transform(atomgroup)[:,1]
+    var1, var2 = pc.cumulated_variance[0], pc.cumulated_variance[1]-pc.cumulated_variance[0]
+    return pc1, pc2, var1, var2
 
 
 def pca2d(axs, psf, dcd, sel, num_bin=100, align=True, cmap='viridis'): 
