@@ -1,5 +1,6 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def general_temp(num_row, num_col, size_x, size_y):
@@ -30,6 +31,11 @@ def set_grid(ax, *args, **kwargs):
 
 def set_legend(ax, *args, **kwargs):
     ax.legend(facecolor='white', framealpha=0.7, edgecolor='white', *args, **kwargs)
+
+def set_unique_legend(ax, *args, **kwargs):
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = dict(zip(labels, handles))
+    ax.legend(by_label.values(), by_label.keys(), facecolor='white', framealpha=0.7, edgecolor='white')
 
 def number2letter(number, style=1):
     if style ==1 :
