@@ -51,7 +51,7 @@ def number2letter(number, style=1):
     else:
         raise ValueError("Style out of range. Please enter a style of 1 or 2.")
 
-def set_label(axs, style=1, x=-0.2, y=1.05, starting=1, **kwargs):
+def set_label(axs, starting=1, style=1, x=-0.2, y=1.05, **kwargs):
     if style == 1:
         for i, ax in enumerate(axs):
             label = number2letter(i+starting, style=1)
