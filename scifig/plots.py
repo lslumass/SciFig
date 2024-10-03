@@ -37,9 +37,12 @@ def set_legend(ax, *args, **kwargs):
 def merge_legend(ax, order=None):
     handles, labels = ax.get_legend_handles_labels()
     unique = dict(zip(labels, handles))  # Remove duplicate labels
-    ordered_handels = [unique[label] for label in order]
-    ordered_labels = [label for label in order]
-    ax.legend(ordered_handels, ordered_labels)  # Set unique legend
+    if order is None:
+        ax.legend(unique.values(), unique.keys())  # Set unique legend
+    else:
+        ordered_handels = [unique[label] for label in order]
+        ordered_labels = [label for label in order]
+        ax.legend(ordered_handels, ordered_labels)
 
 def set_unique_legend(ax, *args, **kwargs):
     handles, labels = plt.gca().get_legend_handles_labels()
