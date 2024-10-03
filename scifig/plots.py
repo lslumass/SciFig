@@ -34,15 +34,15 @@ def set_legend(ax, *args, **kwargs):
 
 ## merge the enties with same name and reorder
 #  order is the list of entries you expect, like ['line A', 'line B', 'line C'] 
-def merge_legend(ax, order=None):
+def merge_legend(ax, order=None, *args, **kwargs):
     handles, labels = ax.get_legend_handles_labels()
     unique = dict(zip(labels, handles))  # Remove duplicate labels
     if order is None:
-        ax.legend(unique.values(), unique.keys())  # Set unique legend
+        ax.legend(unique.values(), unique.keys(), facecolor='white', framealpha=0.7, edgecolor='white', *args, **kwargs)  # Set unique legend
     else:
         ordered_handels = [unique[label] for label in order]
         ordered_labels = [label for label in order]
-        ax.legend(ordered_handels, ordered_labels)
+        ax.legend(ordered_handels, ordered_labels, facecolor='white', framealpha=0.7, edgecolor='white', *args, **kwargs)
 
 def set_unique_legend(ax, *args, **kwargs):
     handles, labels = plt.gca().get_legend_handles_labels()
