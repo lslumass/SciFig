@@ -32,10 +32,14 @@ def set_grid(ax, *args, **kwargs):
 def set_legend(ax, *args, **kwargs):
     ax.legend(facecolor='white', framealpha=0.7, edgecolor='white', *args, **kwargs)
 
-def merge_legend(ax):
-    handles1, labels1 = ax.get_legend_handles_labels()
-    unique1 = dict(zip(labels1, handles1))  # Remove duplicate labels
-    ax.legend(unique1.values(), unique1.keys())  # Set unique legend
+## merge the enties with same name and reorder
+#  order is the list of entries you expect, like ['line A', 'line B', 'line C'] 
+def merge_legend(ax, order=None):
+    handles, labels = ax.get_legend_handles_labels()
+    unique = dict(zip(labels, handles))  # Remove duplicate labels
+    ordered_handels = [unique[label] for label in order]
+    ordered_labels = [label for label in order]
+    ax.legend(ordered_handels, ordered_labels)  # Set unique legend
 
 def set_unique_legend(ax, *args, **kwargs):
     handles, labels = plt.gca().get_legend_handles_labels()
