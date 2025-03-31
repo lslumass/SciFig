@@ -155,4 +155,5 @@ def myload(filename, *args, **kwargs):
     results = []
     for col in range(cols):
         results.append(data[:, col])
+    results = results + [0, 0, 0, 0, 0, 0, 0, 0]
     return tuple(results)
