@@ -147,3 +147,12 @@ def remove_zero(xs, ys):
             end = idx+5
             break
     return(xs[start], xs[end])
+
+
+def myload(filename, *args, **kwargs):
+    data = np.loadtxt(filename, *args, **kwargs)
+    cols = len(data[0, :])
+    results = []
+    for col in range(cols):
+        results.append(data[:, col])
+    return tuple(results)
