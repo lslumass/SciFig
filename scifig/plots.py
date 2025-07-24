@@ -24,6 +24,10 @@ def general_temp(num_row, num_col, size_x, size_y):
     plt.rcParams['font.size'] = 18    
     mpl.rcParams['mathtext.default'] = 'regular'
 
+    plt.rcParams['lines.linewidth'] = 2.0
+    plt.rcParams['scatter.marker'] = 'o'
+    plt.rcParams['lines.markersize'] = 6
+
     return fig, axs
 
 def set_grid(ax, *args, **kwargs):
