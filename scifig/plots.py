@@ -2,6 +2,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from scipy.ndimage import rotate
+import matplotlib.image as mimg
 import numpy as np
 
 
@@ -112,7 +113,7 @@ def insert_image(ax, image_path, x, y, zoom=1.0, rotate=0):
     - zoom: Zoom factor for the image (default is 1.0).
     """
 
-    img = plt.imread(image_path)
+    img = mimg.imread(image_path)
     img = rotate(img, rotate)  # Rotate the image if needed
     imagebox = OffsetImage(img, zoom=zoom)
     ab = AnnotationBbox(imagebox, (x, y), frameon=False)
