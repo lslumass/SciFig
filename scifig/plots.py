@@ -114,7 +114,7 @@ def insert_image(ax, image_path, x, y, zoom=1.0, rotation=0):
     """
 
     img = mimg.imread(image_path)
-    img = rotate(img, rotate)  # Rotate the image if needed
+    img = rotate(img, rotation)  # Rotate the image if needed
     imagebox = OffsetImage(img, zoom=zoom)
     ab = AnnotationBbox(imagebox, (x, y), frameon=False)
     ax.add_artist(ab)
