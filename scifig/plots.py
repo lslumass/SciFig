@@ -1,5 +1,7 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+from scipy.ndimage import rotate
 import numpy as np
 
 
@@ -96,3 +98,22 @@ def color_cycle(id):
 
 def savefig(fig, filename):
     fig.savefig(filename, dpi=600, bbox_inches='tight')
+
+
+def insert_image(ax, image_path, x, y, zoom=1.0, rotate=0):
+    """
+    Insert an image into a matplotlib axis.
+    
+    Parameters:
+    - ax: The axis to insert the image into.
+    - image_path: Path to the image file.
+    - x,y: Coordinates in the axis where the image will be placed.
+    - rotate: Angle to rotate the image (default is 0).
+    - zoom: Zoom factor for the image (default is 1.0).
+    """
+
+    img = plt.imread(image_path)
+    img = rotate(img, rotate)  # Rotate the image if needed
+    imagebox = OffsetImage(img, zoom=zoom)
+    ab = AnnotationBbox(imagebox, (x, y), frameon=False)
+    ax.add_artist(ab)
