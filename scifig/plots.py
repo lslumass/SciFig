@@ -101,7 +101,7 @@ def savefig(fig, filename):
     fig.savefig(filename, dpi=600, bbox_inches='tight')
 
 
-def insert_image(ax, image_path, x, y, zoom=1.0, rotate=0):
+def insert_image(ax, image_path, x, y, zoom=1.0, rotation=0):
     """
     Insert an image into a matplotlib axis.
     
