@@ -7,49 +7,53 @@ import MDAnalysis as mda
 
 def scatter2hist(point_list, num_bin, styles):
     '''
-    convert scatters to hist or distribution
+    Convert scatter points to histogram or distribution.
     styles:
-        pdf: histogram of probability density function
-        pmf: histogram of probability mass function
-        s_pdf: smoothed line of pdf
-        s_pmf: smoothed line of pmf
+        pdf   : histogram of probability density function
+        pmf   : histogram of probability mass function
+        s_pdf : smoothed line of pdf
+        s_pmf : smoothed line of pmf
     '''
     counts, bins = np.histogram(point_list, num_bin)
-    pmf = counts/counts.sum()
-    pdf = pmf/np.diff(bins)
+    pmf = counts / counts.sum()
+    pdf = pmf / np.diff(bins)
+
+    # Use bin centers instead of edges
+    bin_centers = 0.5 * (bins[1:] + bins[:-1])
+    bin_width = np.diff(bins)[0]
+
+    # Pad edges for smooth or full histogram plotting
+    def pad_edges(x, y):
+        x = np.insert(x, 0, x[0] - bin_width)
+        x = np.append(x, x[-1] + bin_width)
+        y = np.insert(y, 0, 0)
+        y = np.append(y, 0)
+        return x, y
 
     if styles == 'pdf':
-        bins = np.insert(bins, 0, 2*bins[0]-bins[1])
-        bins = bins+0.5*np.diff(bins)[0]
-        pdf = np.insert(pdf, 0, 0)
-        pdf = np.append(pdf, 0)
-        return bins, pdf
+        bin_centers, pdf = pad_edges(bin_centers, pdf)
+        return bin_centers, pdf
+
     elif styles == 'pmf':
-        bins = np.insert(bins, 0, 2*bins[0]-bins[1])
-        bins = bins+0.5*np.diff(bins)[0]
-        pmf = np.insert(pmf, 0, 0)
-        pmf = np.append(pmf, 0)
-        return bins, pmf
+        bin_centers, pmf = pad_edges(bin_centers, pmf)
+        return bin_centers, pmf
+
     elif styles == 's_pdf':
-        bins = np.insert(bins, 0, 2*bins[0]-bins[1])
-        bins = bins+0.5*np.diff(bins)[0]
-        pdf = np.insert(pdf, 0, 0)
-        pdf = np.append(pdf, 0)
-        bins_smooth = np.linspace(bins.min(), bins.max(), num_bin*10)
-        spline = make_interp_spline(bins, pdf, k=3)
+        bin_centers, pdf = pad_edges(bin_centers, pdf)
+        bins_smooth = np.linspace(bin_centers.min(), bin_centers.max(), num_bin * 10)
+        spline = make_interp_spline(bin_centers, pdf, k=3)
         pdf_smooth = spline(bins_smooth)
         return bins_smooth, pdf_smooth
+
     elif styles == 's_pmf':
-        bins = np.insert(bins, 0, 2*bins[0]-bins[1])
-        bins = bins+0.5*np.diff(bins)[0]
-        pmf = np.insert(pmf, 0, 0)
-        pmf = np.append(pmf, 0)
-        bins_smooth = np.linspace(bins.min(), bins.max(), num_bin*10)
-        spline = make_interp_spline(bins, pmf, k=2)
+        bin_centers, pmf = pad_edges(bin_centers, pmf)
+        bins_smooth = np.linspace(bin_centers.min(), bin_centers.max(), num_bin * 10)
+        spline = make_interp_spline(bin_centers, pmf, k=2)
         pmf_smooth = spline(bins_smooth)
         return bins_smooth, pmf_smooth
+
     else:
-        print('styles error')
+        raise ValueError("styles must be one of ['pdf', 'pmf', 's_pdf', 's_pmf']")
 
 
 def mda_pca(psf, dcd, sel, align=True):
