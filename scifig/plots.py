@@ -127,9 +127,9 @@ def add_break(ax, xranges=None, yranges=None):
     xranges: tuple, (x_start, x_end) for x-axis break
     yranges: tuple, (y_start, y_end) for y-axis break
     """
-    if xranges is None:
+    if xranges is not None:
         scale_axes(ax, x_interval=[(xranges[0], xranges[1], 0.01)])
         broken_and_clip_axes(ax, x=xranges[0])
-    if yranges is None:
+    if yranges is not None:
         scale_axes(ax, y_interval=[(yranges[0], yranges[1], 0.01)])
         broken_and_clip_axes(ax, y=yranges[0])
