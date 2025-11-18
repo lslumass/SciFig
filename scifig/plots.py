@@ -118,3 +118,222 @@ def insert_image(ax, image_path, x, y, zoom=1.0, rotation=0):
     imagebox = OffsetImage(img, zoom=zoom)
     ab = AnnotationBbox(imagebox, (x, y), frameon=False)
     ax.add_artist(ab)
+
+
+def break_axis(ax, axis='y', break_ranges=None, 
+               height_ratios=None, width_ratios=None):
+    """
+    Break an existing axis into multiple panels.
+    
+    Parameters:
+    -----------
+    ax : matplotlib.axes.Axes
+        The axis to break (will be replaced)
+    axis : str, default='y'
+        Which axis to break ('x' or 'y')
+    break_ranges : list of tuples
+        Ranges to display, e.g., [(0, 10), (50, 60)] creates a break between 10 and 50
+    height_ratios : list, optional
+        Height ratios for y-axis breaks (auto-calculated if None)
+    width_ratios : list, optional
+        Width ratios for x-axis breaks (auto-calculated if None)
+    
+    Returns:
+    --------
+    axes : list
+        List of new subplot axes that replace the original
+    
+    Example:
+    --------
+    # Break existing y-axis
+    fig, ax = plt.subplots()
+    ax.plot(x, y)
+    axes = break_axis(ax, axis='y', break_ranges=[(-5, 5), (45, 55)])
+    plt.show()
+    """
+    
+    if break_ranges is None:
+        raise ValueError("break_ranges must be specified")
+    
+    n_panels = len(break_ranges)
+    
+    # Get the figure and position of the original axis
+    fig = ax.figure
+    position = ax.get_position()
+    
+    # Store all plot elements from original axis
+    lines = ax.get_lines()
+    collections = ax.collections
+    patches = ax.patches
+    texts = ax.texts
+    xlabel = ax.get_xlabel()
+    ylabel = ax.get_ylabel()
+    title = ax.get_title()
+    
+    # Remove the original axis
+    ax.remove()
+    
+    if axis == 'y':
+        # Create vertically stacked subplots in the original position
+        if height_ratios is None:
+            height_ratios = [r[1] - r[0] for r in break_ranges]
+        
+        # Create new subplots in the original axis position
+        gs = fig.add_gridspec(n_panels, 1, 
+                             left=position.x0, right=position.x1,
+                             bottom=position.y0, top=position.y1,
+                             height_ratios=height_ratios, hspace=0.05)
+        
+        axes = [fig.add_subplot(gs[i]) for i in range(n_panels)]
+        
+        # Copy plot elements to each new axis
+        for new_ax, (ymin, ymax) in zip(axes, break_ranges):
+            # Copy each line
+            for line in lines:
+                xdata, ydata = line.get_data()
+                new_ax.plot(xdata, ydata, 
+                           color=line.get_color(),
+                           linestyle=line.get_linestyle(),
+                           linewidth=line.get_linewidth(),
+                           marker=line.get_marker(),
+                           markersize=line.get_markersize(),
+                           label=line.get_label())
+            
+            # Copy collections (scatter, etc.)
+            for coll in collections:
+                offsets = coll.get_offsets()
+                if len(offsets) > 0:
+                    new_ax.scatter(offsets[:, 0], offsets[:, 1],
+                                  c=coll.get_facecolor(),
+                                  s=coll.get_sizes())
+            
+            new_ax.set_ylim(ymin, ymax)
+            new_ax.spines['top'].set_visible(False)
+            new_ax.spines['bottom'].set_visible(False)
+        
+        # Show spines only on outer edges
+        axes[0].spines['top'].set_visible(True)
+        axes[-1].spines['bottom'].set_visible(True)
+        axes[-1].set_xlabel(xlabel)
+        axes[len(axes)//2].set_ylabel(ylabel)
+        axes[0].set_title(title)
+        
+        # Add break markers
+        d = 0.015
+        for i, ax in enumerate(axes):
+            if i < len(axes) - 1:  # Bottom of upper panels
+                kwargs = dict(transform=ax.transAxes, color='k', clip_on=False, linewidth=1)
+                ax.plot((-d, +d), (-d, +d), **kwargs)
+                ax.plot((1 - d, 1 + d), (-d, +d), **kwargs)
+            if i > 0:  # Top of lower panels
+                kwargs = dict(transform=ax.transAxes, color='k', clip_on=False, linewidth=1)
+                ax.plot((-d, +d), (1 - d, 1 + d), **kwargs)
+                ax.plot((1 - d, 1 + d), (1 - d, 1 + d), **kwargs)
+        
+        # Only show x-ticks on bottom panel
+        for ax in axes[:-1]:
+            ax.tick_params(labelbottom=False)
+    
+    elif axis == 'x':
+        # Create horizontally arranged subplots in the original position
+        if width_ratios is None:
+            width_ratios = [r[1] - r[0] for r in break_ranges]
+        
+        # Create new subplots in the original axis position
+        gs = fig.add_gridspec(1, n_panels,
+                             left=position.x0, right=position.x1,
+                             bottom=position.y0, top=position.y1,
+                             width_ratios=width_ratios, wspace=0.05)
+        
+        axes = [fig.add_subplot(gs[i]) for i in range(n_panels)]
+        
+        # Copy plot elements to each new axis
+        for new_ax, (xmin, xmax) in zip(axes, break_ranges):
+            # Copy each line
+            for line in lines:
+                xdata, ydata = line.get_data()
+                new_ax.plot(xdata, ydata,
+                           color=line.get_color(),
+                           linestyle=line.get_linestyle(),
+                           linewidth=line.get_linewidth(),
+                           marker=line.get_marker(),
+                           markersize=line.get_markersize(),
+                           label=line.get_label())
+            
+            # Copy collections (scatter, etc.)
+            for coll in collections:
+                offsets = coll.get_offsets()
+                if len(offsets) > 0:
+                    new_ax.scatter(offsets[:, 0], offsets[:, 1],
+                                  c=coll.get_facecolor(),
+                                  s=coll.get_sizes())
+            
+            new_ax.set_xlim(xmin, xmax)
+            new_ax.spines['left'].set_visible(False)
+            new_ax.spines['right'].set_visible(False)
+        
+        # Show spines only on outer edges
+        axes[0].spines['left'].set_visible(True)
+        axes[-1].spines['right'].set_visible(True)
+        axes[0].set_ylabel(ylabel)
+        axes[len(axes)//2].set_xlabel(xlabel)
+        axes[0].set_title(title)
+        
+        # Add break markers
+        d = 0.015
+        for i, ax in enumerate(axes):
+            if i < len(axes) - 1:  # Right side of left panels
+                kwargs = dict(transform=ax.transAxes, color='k', clip_on=False, linewidth=1)
+                ax.plot((1 - d, 1 + d), (-d, +d), **kwargs)
+                ax.plot((1 - d, 1 + d), (1 - d, 1 + d), **kwargs)
+            if i > 0:  # Left side of right panels
+                kwargs = dict(transform=ax.transAxes, color='k', clip_on=False, linewidth=1)
+                ax.plot((-d, +d), (-d, +d), **kwargs)
+                ax.plot((-d, +d), (1 - d, 1 + d), **kwargs)
+        
+        # Only show y-ticks on left panel
+        for ax in axes[1:]:
+            ax.tick_params(labelleft=False)
+    
+    else:
+        raise ValueError("axis must be 'x' or 'y'")
+    
+    return axes
+
+
+# Example usage: Break existing axis with Y-axis break
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Data with a large gap
+x = np.arange(0, 10, 0.1)
+y = np.concatenate([np.sin(x[:50]) * 2, np.sin(x[50:]) * 2 + 50])
+
+# Plot on original axis
+ax.plot(x, y, 'bo-', linewidth=2, markersize=3)
+ax.set_xlabel('X Values')
+ax.set_ylabel('Y Values')
+ax.set_title('Y-Axis Break Example')
+
+# Now break the axis
+axes_y = break_axis(ax, axis='y', break_ranges=[(-3, 3), (47, 53)])
+
+plt.tight_layout()
+
+# Example usage: Break existing axis with X-axis break
+fig2, ax2 = plt.subplots(figsize=(12, 5))
+
+# Data with gap in x
+x2 = np.concatenate([np.arange(0, 5, 0.1), np.arange(50, 55, 0.1)])
+y2 = np.sin(x2)
+
+# Plot on original axis
+ax2.plot(x2, y2, 'r-', linewidth=2)
+ax2.set_xlabel('X Values')
+ax2.set_ylabel('Y Values')
+ax2.set_title('X-Axis Break Example')
+
+# Now break the axis
+axes_x = break_axis(ax2, axis='x', break_ranges=[(0, 5), (50, 55)])
+
+plt.tight_layout()
+plt.show()
