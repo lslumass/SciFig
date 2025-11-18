@@ -129,7 +129,7 @@ def add_break(ax, xranges=None, yranges=None):
     """
     if xranges is not None:
         scale_axes(ax, x_interval=[(xranges[0], xranges[1], 0.01)])
-        broken_and_clip_axes(ax, x=xranges[0])
+        broken_and_clip_axes(ax, x=xranges[0], which='lower')
     if yranges is not None:
         scale_axes(ax, y_interval=[(yranges[0], yranges[1], 0.01)])
-        broken_and_clip_axes(ax, y=yranges[0])
+        broken_and_clip_axes(ax, y=yranges[0], which='lower')
