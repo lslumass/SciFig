@@ -8,13 +8,13 @@ from break_axes import broken_and_clip_axes
 from break_axes import scale_axes
 
 
-def general_temp(num_row, num_col, size_x, size_y):
+def general_temp(num_row, num_col, size_x, size_y, *args, **kwargs):
     '''
     create a matplotlib figure;
     plt.subplots(num_row, num_col, figsize=(size_x, size_y))
     '''
 
-    fig, axs = plt.subplots(num_row, num_col, figsize=(size_x, size_y))
+    fig, axs = plt.subplots(num_row, num_col, figsize=(size_x, size_y), *args, **kwargs)
     fig.tight_layout(pad=3)
     if num_row*num_col != 1:
         axs = axs.ravel()
